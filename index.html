@@ -1,0 +1,993 @@
+<!--
+  ARCHETYPE: COZY HOMESTYLE BAKERY
+  KEY STRUCTURAL DECISIONS:
+  - Hero: Full-bleed split layout — left half is a warm cream panel with hand-lettered-feel typography
+    and staggered tagline text; right half is a tall photo collage of two stacked images, no overlay.
+  - Nav: Slim top banner with name centered, links flush right, sticky on scroll with subtle border.
+  - Menu/Offerings: Horizontal scroll ribbon on mobile; on desktop, an asymmetric 2+1 masonry-style card layout.
+  - CTA: "Call Now" tel: link — primary button is a warm jam-red pill only in the hero;
+    secondary CTA is an inline text link with an underline in the footer contact block.
+  - Testimonies: Blockquote pull-quote style, stacked vertically, large open-quote glyph,
+    NO avatars, NO stars, NO badges — first name + last initial only.
+  - Hours & Location: Two-column sidebar layout — hours table left, map iframe right.
+  - Animation: Subtle CSS transition on nav (border fade); hover lift on menu cards only.
+    No scroll-triggered fade-ups.
+  - Color: Cream (#FAF6EF), warm blush (#F2DDD1), berry jam (#8B3A52), butter gold (#D4A843),
+    soft sage (#7A8C6E) as accent; body text in near-black (#2C1A0E).
+  - Fonts: "Playfair Display" (display serif for headings) + "Nunito" (friendly rounded sans for body).
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sofia's Bakery — Inglewood, CA</title>
+  <meta name="description" content="Sofia's Bakery in Inglewood, CA — fresh-baked pastries, breads, coffee, smoothies & more. Open daily from 5:30 AM." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: #FAF6EF;
+      color: #2C1A0E;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ===== TOKENS ===== */
+    :root {
+      --cream: #FAF6EF;
+      --blush: #F2DDD1;
+      --jam:   #8B3A52;
+      --jam-dark: #6E2C40;
+      --butter: #D4A843;
+      --sage:  #7A8C6E;
+      --ink:   #2C1A0E;
+      --ink-light: #5C3D2E;
+      --border: #E5D5C5;
+    }
+
+    /* ===== UTILITY ===== */
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+    .container { width: min(1120px, 92vw); margin-inline: auto; }
+    .section-label {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ===== NAV ===== */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--cream);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+    .site-nav.scrolled { border-color: var(--border); }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--jam);
+      letter-spacing: 0.01em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--jam); }
+    .nav-cta {
+      background: var(--jam);
+      color: #fff !important;
+      padding: 0.45rem 1.1rem;
+      border-radius: 2px;
+      transition: background 0.2s !important;
+    }
+    .nav-cta:hover { background: var(--jam-dark) !important; }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: opacity 0.2s;
+    }
+
+    /* ===== HERO — SPLIT LAYOUT ===== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100svh - 62px);
+    }
+    .hero-text-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 4rem 5rem 0;
+    }
+    .hero-text-panel .section-label { color: var(--butter); }
+    .hero-h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 4.5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+    .hero-h1 em {
+      font-style: italic;
+      color: var(--jam);
+      display: block;
+    }
+    .hero-tagline {
+      font-size: 1.05rem;
+      color: var(--ink-light);
+      max-width: 420px;
+      margin-bottom: 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--jam);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.85rem 2.1rem;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--jam-dark); transform: translateY(-1px); }
+    .hero-sublink {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+    }
+    .hero-sublink:hover { color: var(--jam); }
+    .hero-hours-peek {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--ink-light);
+    }
+    .hero-hours-peek strong { color: var(--ink); font-weight: 700; }
+
+    /* Hero photo collage */
+    .hero-photo-panel {
+      position: relative;
+      overflow: hidden;
+      background: var(--blush);
+    }
+    .hero-photo-panel .photo-top {
+      height: 60%;
+      width: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .hero-photo-panel .photo-bottom {
+      height: 40%;
+      width: 100%;
+      object-fit: cover;
+      object-position: center top;
+      border-top: 5px solid var(--cream);
+    }
+    .hero-badge {
+      position: absolute;
+      bottom: 2rem;
+      left: -1rem;
+      background: var(--butter);
+      color: var(--ink);
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.6rem 1.4rem 0.6rem 2rem;
+      box-shadow: 2px 3px 12px rgba(44,26,14,0.18);
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* ===== ABOUT STRIP ===== */
+    .about-strip {
+      background: var(--jam);
+      color: #fff;
+      padding: 3.5rem 0;
+    }
+    .about-strip-inner {
+      display: grid;
+      grid-template-columns: 1fr 2px 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    .about-divider {
+      background: rgba(255,255,255,0.25);
+      height: 100%;
+      min-height: 80px;
+    }
+    .about-quote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      line-height: 1.4;
+      font-weight: 400;
+    }
+    .about-desc {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      opacity: 0.9;
+    }
+    .about-desc strong { font-weight: 700; opacity: 1; }
+
+    /* ===== MENU / OFFERINGS ===== */
+    .menu-section { padding: 6rem 0; }
+    .menu-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .menu-h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+    .menu-h2 span { color: var(--jam); }
+    .menu-note {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      max-width: 260px;
+      text-align: right;
+    }
+
+    /* Asymmetric grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.25rem;
+    }
+    .menu-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--blush);
+      border-radius: 4px;
+    }
+    .menu-card--featured { grid-row: span 2; }
+    .menu-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+    .menu-card--featured img { min-height: 420px; }
+    .menu-card:not(.menu-card--featured) img { min-height: 180px; }
+    .menu-card:hover img { transform: scale(1.03); }
+    .menu-card-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(44,26,14,0.72) 0%, transparent 100%);
+      padding: 2rem 1.25rem 1.1rem;
+      color: #fff;
+    }
+    .menu-card-label h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+    .menu-card-label p {
+      font-size: 0.78rem;
+      opacity: 0.85;
+    }
+
+    /* Extras row */
+    .menu-extras {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .menu-extra-pill {
+      flex: 1 1 140px;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      font-size: 0.88rem;
+    }
+    .menu-extra-pill strong {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--jam);
+      margin-bottom: 0.2rem;
+    }
+
+    /* ===== TESTIMONIES ===== */
+    .testimonies-section {
+      background: var(--blush);
+      padding: 6rem 0;
+    }
+    .testimonies-inner {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .testimonies-left h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.7rem, 2.5vw, 2.3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .testimonies-left p {
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      line-height: 1.7;
+    }
+    .testimonies-right {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+    .testimony {
+      border-left: 3px solid var(--butter);
+      padding-left: 1.75rem;
+      position: relative;
+    }
+    .testimony::before {
+      content: '\201C';
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      line-height: 0.7;
+      color: var(--butter);
+      opacity: 0.35;
+      position: absolute;
+      top: 0;
+      left: -0.15rem;
+    }
+    .testimony blockquote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      padding-top: 0.5rem;
+    }
+    .testimony cite {
+      font-style: normal;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sage);
+    }
+
+    /* ===== HOURS & LOCATION ===== */
+    .visit-section { padding: 6rem 0; }
+    .visit-section .section-label { margin-bottom: 0.5rem; }
+    .visit-h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 3rem;
+    }
+    .visit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+    .hours-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    .hours-table tr { border-bottom: 1px solid var(--border); }
+    .hours-table tr:last-child { border-bottom: none; }
+    .hours-table td { padding: 0.65rem 0; }
+    .hours-table td:first-child {
+      font-weight: 700;
+      color: var(--ink);
+      width: 110px;
+    }
+    .hours-table td:last-child { color: var(--ink-light); }
+    .hours-table tr.today td { color: var(--jam); }
+    .hours-table tr.today td:first-child::after {
+      content: ' ↩';
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    .visit-address {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      line-height: 1.7;
+    }
+    .visit-address strong { color: var(--ink); font-weight: 700; display: block; margin-bottom: 0.2rem; }
+    .visit-address a {
+      color: var(--jam);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 600;
+    }
+
+    .map-wrapper {
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(44,26,14,0.1);
+      background: var(--blush);
+    }
+    .map-wrapper iframe {
+      width: 100%;
+      height: 380px;
+      border: 0;
+      display: block;
+    }
+
+    /* ===== PHOTO GALLERY STRIP ===== */
+    .gallery-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 260px;
+    }
+    .gallery-strip img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.25s;
+    }
+    .gallery-strip img:hover { opacity: 0.88; }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.75);
+      padding: 3.5rem 0 2.5rem;
+    }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .footer-brand .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: var(--butter);
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+    .footer-brand p { font-size: 0.82rem; line-height: 1.7; max-width: 220px; }
+    .footer-col h4 {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 1rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.5rem; font-size: 0.85rem; }
+    .footer-col ul a {
+      color: rgba(255,255,255,0.75);
+      transition: color 0.2s;
+    }
+    .footer-col ul a:hover { color: var(--butter); }
+    .footer-cta-link {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--butter);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: opacity 0.2s;
+    }
+    .footer-cta-link:hover { opacity: 0.8; }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.4);
+    }
+    .footer-bottom a {
+      color: rgba(255,255,255,0.55);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+    }
+    .footer-bottom a:hover { color: var(--butter); }
+
+    /* ===== MOBILE NAV DRAWER ===== */
+    .nav-drawer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--cream);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .nav-drawer.open { display: flex; }
+    .nav-drawer a {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-style: italic;
+      color: var(--ink);
+      transition: color 0.2s;
+    }
+    .nav-drawer a:hover { color: var(--jam); }
+    .nav-drawer-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--ink-light);
+      line-height: 1;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-text-panel { padding: 3.5rem 0 2.5rem; order: 2; }
+      .hero-photo-panel { order: 1; height: 55vw; min-height: 300px; }
+      .hero-photo-panel .photo-top { height: 60%; }
+      .hero-photo-panel .photo-bottom { height: 40%; }
+      .hero-badge { bottom: 1.5rem; }
+
+      .about-strip-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+      .about-divider { display: none; }
+
+      .menu-grid { grid-template-columns: 1fr; }
+      .menu-card--featured { grid-row: span 1; }
+      .menu-card--featured img { min-height: 260px; }
+
+      .testimonies-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .visit-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .gallery-strip { grid-template-columns: repeat(2, 1fr); height: auto; }
+      .gallery-strip img { height: 180px; }
+
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: span 2; }
+
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+
+    @media (max-width: 560px) {
+      .footer-inner { grid-template-columns: 1fr; }
+      .footer-brand { grid-column: span 1; }
+      .menu-header { flex-direction: column; align-items: flex-start; }
+      .menu-note { text-align: left; }
+      .gallery-strip { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile nav drawer -->
+  <div class="nav-drawer" id="navDrawer" role="dialog" aria-label="Navigation menu">
+    <button class="nav-drawer-close" id="navClose" aria-label="Close menu">✕</button>
+    <a href="#menu" onclick="closeDrawer()">Menu</a>
+    <a href="#testimonies" onclick="closeDrawer()">What People Say</a>
+    <a href="#visit" onclick="closeDrawer()">Visit Us</a>
+    <a href="tel:3106736633" onclick="closeDrawer()">Call Now</a>
+  </div>
+
+  <!-- NAV -->
+  <nav class="site-nav" id="siteNav">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo">Sofia's Bakery</a>
+      <ul class="nav-links">
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#testimonies">What People Say</a></li>
+        <li><a href="#visit">Hours &amp; Location</a></li>
+        <li><a href="tel:3106736633" class="nav-cta">Call Now</a></li>
+      </ul>
+      <button class="nav-hamburger" id="navOpen" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container" style="display:contents;">
+      <div class="hero-text-panel" style="padding-left: calc((100vw - min(1120px,92vw)) / 2 + 0px); padding-left: max(1.5rem, calc((100vw - 1120px) / 2));">
+        <span class="section-label">Inglewood, California</span>
+        <h1 class="hero-h1">
+          Fresh from the oven,<br>
+          <em>every single morning.</em>
+        </h1>
+        <p class="hero-tagline">
+          Sofia's Bakery is your neighborhood sweet spot — buttery pastries,
+          pillowy breads, rich coffee, and a warm welcome, starting before sunrise.
+        </p>
+        <div class="hero-actions">
+          <a href="tel:3106736633" class="btn-primary">Call Now — (310) 673-6633</a>
+          <a href="https://maps.google.com/maps?q=10021+S+Inglewood+Ave,+Inglewood,+CA+90304" target="_blank" rel="noopener" class="hero-sublink">Get Directions</a>
+        </div>
+        <div class="hero-hours-peek">
+          <strong>Open daily</strong> — Mon–Sat 5:30 AM – 9:00 PM &nbsp;·&nbsp; Sun 6:00 AM – 5:00 PM
+        </div>
+      </div>
+
+      <div class="hero-photo-panel">
+        <img
+          class="photo-top"
+          src="https://lh3.googleusercontent.com/place-photos/AJRVUZPRZVBxMOlDcQ_qkjMebRv6nrfiI_p17D-4-r0gLg1FT-thQVh_a1qzmD_ss90HMkF6xtV95uW9793VxJrMRASs4fad1_kL43K37kShVay3XUtfBNCHSUwxqJ8QTIIYhK-v0p-7KzavTTzIxQ=s4800-w1600"
+          alt="Sofia's Bakery fresh pastries display"
+          loading="eager"
+          onerror="this.src='https://source.unsplash.com/1600x900/?fresh+pastry+bakery+display'"
+        />
+        <img
+          class="photo-bottom"
+          src="https://lh3.googleusercontent.com/place-photos/AJRVUZNQf0HdmZhO-fTOfPbtL-Jzkp_JxSU9crqnGDNcpVunsRJ_MdmfLugilOJpCKNrmIoSRgKL4YCGZMV3mDAbmUeJVsRjAXIWjGAwyBcWXP005O0mf7y5NPi00uxInTIeo9XTP6i4P5dGgmccbxg=s4800-w1600"
+          alt="Sofia's Bakery interior warm atmosphere"
+          loading="eager"
+          onerror="this.src='https://source.unsplash.com/1600x900/?cozy+bakery+coffee+shop'"
+        />
+        <span class="hero-badge">Since the neighborhood was hungry</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT STRIP -->
+  <section class="about-strip">
+    <div class="container about-strip-inner">
+      <p class="about-quote">
+        "A low-key corner of Inglewood where every morning smells like something wonderful."
+      </p>
+      <div class="about-divider" aria-hidden="true"></div>
+      <p class="about-desc">
+        <strong>Sofia's Bakery</strong> has been the neighborhood's morning ritual for years.
+        We bake our breads and pastries fresh daily, pull espresso shots that beat the chain up the street,
+        blend real-fruit smoothies, and keep the doors open until you're ready to call it a day.
+        Cafeteria-style, no fuss — just good food and friendlier people.
+      </p>
+    </div>
+  </section>
+
+  <!-- MENU / OFFERINGS -->
+  <section class="menu-section" id="menu">
+    <div class="container">
+      <div class="menu-header">
+        <div>
+          <span class="section-label">What We Offer</span>
+          <h2 class="menu-h2">Baked with care,<br><span>served with warmth</span></h2>
+        </div>
+        <p class="menu-note">Everything made fresh — ask us what just came out of the oven.</p>
+      </div>
+
+      <div class="menu-grid">
+        <!-- Featured: Pastries -->
+        <div class="menu-card menu-card--featured">
+          <img
+            src="https://lh3.googleusercontent.com/place-photos/AJRVUZMEBfLhmn7rC-do2ntHTf0tU5bRaMvYmyBgAXWjG80n22rb4RJBWHzGGkFO4RT2mPYuaLNJMq6VbhHiwZ-79dcpVmqYcAftv0_fo-bLrkzJbIJxMRlpFCcX7sl676SaFOVd2J_8kZvOuIBYfg=s4800-w1600"
+            alt="Fresh-baked pastries at Sofia's Bakery"
+            loading="lazy"
+            onerror="this.src='https://source.unsplash.com/900x1200/?fresh+croissant+pastry+cream'"
+          />
+          <div class="menu-card-label">
+            <h3>Fresh Pastries &amp; Breads</h3>
+            <p>Cream-filled, fruit-topped, and baked golden every morning</p>
+          </div>
+        </div>
+
+        <!-- Coffee -->
+        <div class="menu-card">
+          <img
+            src="https://lh3.googleusercontent.com/place-photos/AJRVUZM02b3I2ArVRTGARuLgYoOy91rmILmQHtQSmDLLKUYSFZjSTmyrTFFu97mO4QjgEIeJBz6Lf01lm5-LMloA787rhzB6Z56LUxyL2F3aG_jRpph4O_lZkgsswTos58zW6VY6tn-AICWk9dXnfg=s4800-w1600"
+            alt="Coffee and hot drinks at Sofia's Bakery"
+            loading="lazy"
+            onerror="this.src='https://source.unsplash.com/900x600/?espresso+pour+latte+art'"
+          />
+          <div class="menu-card-label">
+            <h3>Coffee &amp; Hot Cocoa</h3>
+            <p>Rich espresso drinks — better than the chain up the block</p>
+          </div>
+        </div>
+
+        <!-- Smoothies -->
+        <div class="menu-card">
+          <img
+            src="https://lh3.googleusercontent.com/place-photos/AJRVUZMF7hjd2VwTiacTDsFTTV9glbgJTPQVWC4g6yK-s69EGbYQgpsxnzdVOu_8B4Yb9vGU4o6w2aaHCg7_yjIhSbUHA-hANiPCE0Igu6HryKPMm6jEQV3RCPrvrAVqwokWN-uhfxwczpTay8lvbQ=s4800-w1600"
+            alt="Fresh smoothies at Sofia's Bakery"
+            loading="lazy"
+            onerror="this.src='https://source.unsplash.com/900x600/?fresh+fruit+smoothie+colorful'"
+          />
+          <div class="menu-card-label">
+            <h3>Fresh Smoothies</h3>
+            <p>Real fruit blended to order — a bright start to any morning</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Extra offerings -->
+      <div class="menu-extras">
+        <div class="menu-extra-pill">
+          <strong>Sandwiches</strong>
+          Made-to-order on our own fresh bread
+        </div>
+        <div class="menu-extra-pill">
+          <strong>Toasted Bagels</strong>
+          Warm, chewy, and ready fast
+        </div>
+        <div class="menu-extra-pill">
+          <strong>Snacks &amp; Bites</strong>
+          Little somethings to keep you going all day
+        </div>
+        <div class="menu-extra-pill">
+          <strong>Hot Cocoa</strong>
+          Cozy and rich — a Sofia's classic
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHOTO GALLERY STRIP -->
+  <div class="gallery-strip" aria-label="Photo gallery">
+    <img
+      src="https://lh3.googleusercontent.com/place-photos/AJRVUZN0CEuC67Jr71K_njXbLW9kpcC93KPnZfxDyt7G5T2HVBZFznWDaDxsnjnJB2DAiLQgpfZ43-5-oYcdogSH1AZLrqOwYuYevme_fxAVcsXC_wmtR_xyJOtI3X0XlC_nSUxPeKvtrCuiyxXhTiw=s4800-w1600"
+      alt="Sofia's Bakery"
+      loading="lazy"
+      onerror="this.src='https://source.unsplash.com/800x500/?bakery+counter+display'"
+    />
+    <img
+      src="https://lh3.googleusercontent.com/place-photos/AJRVUZPRZVBxMOlDcQ_qkjMebRv6nrfiI_p17D-4-r0gLg1FT-thQVh_a1qzmD_ss90HMkF6xtV95uW9793VxJrMRASs4fad1_kL43K37kShVay3XUtfBNCHSUwxqJ8QTIIYhK-v0p-7KzavTTzIxQ=s4800-w1600"
+      alt="Fresh pastries"
+      loading="lazy"
+      onerror="this.src='https://source.unsplash.com/800x500/?artisan+bread+loaves'"
+    />
+    <img
+      src="https://lh3.googleusercontent.com/place-photos/AJRVUZMEBfLhmn7rC-do2ntHTf0tU5bRaMvYmyBgAXWjG80n22rb4RJBWHzGGkFO4RT2mPYuaLNJMq6VbhHiwZ-79dcpVmqYcAftv0_fo-bLrkzJbIJxMRlpFCcX7sl676SaFOVd2J_8kZvOuIBYfg=s4800-w1600"
+      alt="Bakery goods"
+      loading="lazy"
+      onerror="this.src='https://source.unsplash.com/800x500/?sweet+pastry+cream+filling'"
+    />
+    <img
+      src="https://lh3.googleusercontent.com/place-photos/AJRVUZNQf0HdmZhO-fTOfPbtL-Jzkp_JxSU9crqnGDNcpVunsRJ_MdmfLugilOJpCKNrmIoSRgKL4YCGZMV3mDAbmUeJVsRjAXIWjGAwyBcWXP005O0mf7y5NPi00uxInTIeo9XTP6i4P5dGgmccbxg=s4800-w1600"
+      alt="Sofia's Bakery atmosphere"
+      loading="lazy"
+      onerror="this.src='https://source.unsplash.com/800x500/?cozy+cafe+morning+light'"
+    />
+  </div>
+
+  <!-- TESTIMONIES -->
+  <section class="testimonies-section" id="testimonies">
+    <div class="container testimonies-inner">
+      <div class="testimonies-left">
+        <span class="section-label">Customer Testimonies</span>
+        <h2>What people are saying</h2>
+        <p>Straight from the mouths of neighbors and regulars who keep coming back.</p>
+      </div>
+      <div class="testimonies-right">
+
+        <div class="testimony">
+          <blockquote>
+            "Absolutely the best coffee around! Forget the Starbucks up the street and do yourself a favor
+            and go have some of the best coffee I have personally had. Beautiful, tasty, extensive fresh pastries.
+            We stopped here every day we were around. The staff was amazing and very patient with us.
+            We can't wait to have an excuse to come here again."
+          </blockquote>
+          <cite>Beth A.</cite>
+        </div>
+
+        <div class="testimony">
+          <blockquote>
+            "This bakery makes good pastries — they have a great balance of ingredients when making
+            filled pastries with cream and fruits. They also make smoothies, sandwiches, and toasted bagels.
+            Good place, check them out."
+          </blockquote>
+          <cite>Giovani M.</cite>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HOURS & LOCATION -->
+  <section class="visit-section" id="visit">
+    <div class="container">
+      <span class="section-label">Come See Us</span>
+      <h2 class="visit-h2">Hours &amp; Location</h2>
+      <div class="visit-grid">
+        <div class="visit-left">
+          <table class="hours-table" aria-label="Business hours">
+            <tbody>
+              <tr><td>Monday</td><td>5:30 AM – 9:00 PM</td></tr>
+              <tr><td>Tuesday</td><td>5:30 AM – 9:00 PM</td></tr>
+              <tr><td>Wednesday</td><td>5:30 AM – 9:00 PM</td></tr>
+              <tr><td>Thursday</td><td>5:30 AM – 9:00 PM</td></tr>
+              <tr><td>Friday</td><td>5:30 AM – 9:00 PM</td></tr>
+              <tr><td>Saturday</td><td>5:30 AM – 9:00 PM</td></tr>
+              <tr><td>Sunday</td><td>6:00 AM – 5:00 PM</td></tr>
+            </tbody>
+          </table>
+
+          <div class="visit-address">
+            <strong>Address</strong>
+            10021 S Inglewood Ave<br>
+            Inglewood, CA 90304
+            <br><br>
+            <strong>Phone</strong>
+            <a href="tel:3106736633">(310) 673-6633</a>
+            <br><br>
+            <a href="https://maps.google.com/maps?q=10021+S+Inglewood+Ave,+Inglewood,+CA+90304" target="_blank" rel="noopener" class="footer-cta-link" style="margin-top:0;">Get Directions &rarr;</a>
+          </div>
+        </div>
+
+        <div class="map-wrapper">
+          <iframe
+            src="https://www.google.com/maps?q=10021+S+Inglewood+Ave,+Inglewood,+CA+90304,+USA&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Sofia's Bakery location map"
+            aria-label="Map showing Sofia's Bakery at 10021 S Inglewood Ave, Inglewood, CA"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="footer-logo">Sofia's Bakery</span>
+          <p>Your neighborhood bakery in Inglewood — open early, warm always, and worth the drive.</p>
+          <a href="tel:3106736633" class="footer-cta-link">(310) 673-6633 — Call Now</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#menu">Our Menu</a></li>
+            <li><a href="#testimonies">What People Say</a></li>
+            <li><a href="#visit">Hours &amp; Location</a></li>
+            <li><a href="tel:3106736633">Call Us</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Find Us Online</h4>
+          <ul>
+            <li>
+              <a href="https://maps.google.com/?cid=4714524911323303312&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNlEAIYBCAA" target="_blank" rel="noopener">
+                Google Business
+              </a>
+            </li>
+            <li>
+              <a href="https://maps.google.com/maps?q=10021+S+Inglewood+Ave,+Inglewood,+CA+90304" target="_blank" rel="noopener">
+                Get Directions
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>
+          Mockup designed by <a href="mailto:jcpeng2002@gmail.com">LJ Sites</a> —
+          interested in making this yours?
+          <a href="mailto:jcpeng2002@gmail.com">jcpeng2002@gmail.com</a>
+        </span>
+        <span>&copy; 2025 Sofia's Bakery, Inglewood CA</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll border
+    (function() {
+      var nav = document.getElementById('siteNav');
+      var onScroll = function() {
+        if (window.scrollY > 10) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+    })();
+
+    // Mobile drawer
+    function closeDrawer() {
+      document.getElementById('navDrawer').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('navOpen').addEventListener('click', function() {
+      document.getElementById('navDrawer').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    document.getElementById('navClose').addEventListener('click', closeDrawer);
+
+    // Highlight today in hours table
+    (function() {
+      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var today = days[new Date().getDay()];
+      var rows = document.querySelectorAll('.hours-table tr');
+      rows.forEach(function(row) {
+        var cell = row.querySelector('td');
+        if (cell && cell.textContent.trim() === today) {
+          row.classList.add('today');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
